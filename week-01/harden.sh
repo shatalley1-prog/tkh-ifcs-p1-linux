@@ -10,3 +10,4 @@ sudo chmod 640 /etc/shadow
 sudo chown root:shadow /etc/shadow
 
 echo "Hardening complete."
+
