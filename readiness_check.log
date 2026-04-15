@@ -1,0 +1,17 @@
+==================================================
+SESSION 16: READINESS INVENTORY
+==================================================
+Operator: Shatiqua Talley
+Date: April 14, 2026
+
+Confidence Audit (Yes/No):
+1. Nmap (Network Scanning): No
+2. Docker (Containerization): Yes
+3. Linux Hardening (UFW/chmod): Yes
+4. VS Code Remote-SSH: Yes
+
+Identify your weakest area and your plan to review it:
+My weakest area is Nmap, because I did not use it in this lab. I plan to review basic 
+scanning commands, practice scanning local and remote hosts and ports, and learn how to 
+match Nmap results with services on those ports using ss and nc.
+==================================================
