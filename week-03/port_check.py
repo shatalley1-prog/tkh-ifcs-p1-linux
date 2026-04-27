@@ -1,22 +1,15 @@
 #!/usr/bin/env python3
 """
 ==================================================
-T1-M1-S07 Lab
+Session 07 - The Sentry
 ==================================================
-Session 07: The Sentry (Python Foundations)
-Environment: Chromebook Linux (Penguin)
-The Goal: Master Python data types, variable casting, and environment isolation to build stable security tools.
-
 Mission: The Automation Forge
-Build a tool to "knock" on the digital doors (Ports) of five different servers to verify if SSH (Port 22) is responsive.
-
-Description:
-This script interrogates 5 servers to verify whether:
-- SSH (Port 22) is responsive
-- Each target is checked using a socket connection with a 1-second timeout
-
+Author: Shatiqua Talley
+Environment: Chromebook Linux (Penguin)
+Description: Checks SSH port 22 is open on a list of target servers using 
+a 1-second timeout to determine whether each server is reachable.
 ==================================================
-Port Check
+Port Checker
 ==================================================
 """
 import socket
