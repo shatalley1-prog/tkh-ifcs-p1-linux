@@ -2,51 +2,88 @@
 **Classification:** Passive Security Audit  
 **Operator:** Shatiqua Talley   
 
+**Mission:** Build a clear threat profile using passive OSINT findings only.
+
 ---
 
-> **Mission:** Build a clear threat profile using passive OSINT findings only.
+The following digital footprint analysis provides a comprehensive technical audit of the specified targets to assess potential risks associated with the TitanCorp acquisition.
 
 ---
 
 ## 1. Subdomain Discovery   
 * **Tool Used:** `Sublist3r`  
 * **Target Domain:** `tesla.com` (Proxy for CloudNano)  
-* **Subdomains Found:**   
- 
-	* `accounts.tesla.com` (Authentication & Identity)  
-	* `toolbox.tesla.com` (Diagnostics & Internal Tools)  
+* **Subdomains Found:** 40   
 
-**Notes:** These subdomains suggest significant public-facing login and internal-tool surfaces.
+Highest‑impact components of the target’s identity:
+
+| Subdomain                          | Purpose                                      | Risk Level |
+| ---------------------------------- | -------------------------------------------- | ---------- |
+| `accounts.tesla.com`               | Identity Gateway — logins, passwords, tokens | Critical   |
+| `sso-dev.tesla.com`                | Development Single Sign-On                   | Critical   |
+| `auth.tesla.com`                   | Main Authentication System                   | Critical   |
+| `mfa-reset.tesla.com`              | MFA Reset Interface                          | Critical   |
+| `fleet-api.prd.vn.cloud.tesla.com` | Production Fleet API                         | Critical   |
 
 ## 2. Tech Stack Mapping     
 * **Tool Used:** BuiltWith / Wappalyzer  
 * **Identified Technologies (CMS/CDN/Backend):**   
 
-| Layer | Technology | Description |
-| :--- | :--- | :--- |
-| **Frontend Framework** | Next.js | React-based SSR framework |
-| **Data Visualization** | Plotly | Interactive analytics dashboards |
-| **Operating System** | Ubuntu | Linux-based backend OS |
+### CMS
 
-### Additional Observations    
+| Technology | Found On |
+| ---------- | -------- |
+| Drupal 9 | auth.tesla.com, sso-dev.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+| Next.js | accounts.tesla.com, sso-dev.tesla.com |
 
-	- Pages are optimized for mobile compatibility  
-	- Heavy reliance on JavaScript-based rendering  
-	- Use of third‑party protection such as CAPTCHA  
+No traditional CMS is used for identity or API logic across these subdomains.
+CMS technologies (e.g., Drupal) detected at the organizational level apply to general site content, not to authentication flows or APIs.
+Identity and API services are implemented as custom applications, which is expected for security‑critical systems.
 
-### Observations  
-The site appears to use a modern web framework and analytics-style tools.  
+### CDN
+
+| Technology | Found On |
+| ---------- | -------- |
+| Akamai Edge | auth.tesla.com, sso-dev.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+| Akamai | mfa-reset.tesla.com |
+
+Akamai CDN and edge services are consistently present across the stack (including Akamai Edge, Bot Manager, and performance monitoring).
+This provides global delivery, DDoS mitigation, and abuse controls in front of all public endpoints.
+
+### Backend Technologies
+
+| Technology | Found On |
+| ---------- | -------- |
+| nginx + Apache | auth.tesla.com, sso-dev.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+| Amazon AWS | auth.tesla.com, sso-dev.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+| Linux | auth.tesla.com, sso-dev.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+| Docker + Kubernetes | auth.tesla.com, sso-dev.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+| MongoDB + MySQL | auth.tesla.com, sso-dev.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+| React + JavaScript | accounts.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+| Akamai Bot Manager | auth.tesla.com, sso-dev.tesla.com, fleet-api.prd.vn.cloud.tesla.com |
+
+Custom authentication backends for accounts, auth, sso-dev, and mfa-reset, handling credentials, sessions, tokens, and recovery workflows.
+Custom, cloud‑hosted REST APIs for fleet-api.prd.vn.cloud.tesla.com, designed for machine‑to‑machine access (no UI, no CMS).
+Cloud infrastructure indicators (AWS, containerization, orchestration) support scalable identity and API operations.
 
 ## 3. Major Exposure Points & Dangers   
 *(List three major exposure points discovered during your OSINT audit and explain why they are dangerous)*
 
-1. **Authentication Surface (`accounts.tesla.com`):**   
-The use of **Next.js** indicates a modern, fast user interface for logins. However, because this site handles identity management, it is a primary target for **Server-Side Request Forgery (SSRF)** or vulnerabilities in the way the framework handles server-side rendering (SSR) of user accounts.  
+1. Identity Harvesting (accounts.tesla.com)  
+These systems control user login, credentials, and session tokens, any weakness here could enable account takeover, expose customer data, and undermine trust in the acquired business.
 
-2. **Internal Diagnostic Data (toolbox.tesla.com):**   
-This subdomain leverages **Plotly**, which points to the handling of highly detailed vehicle telemetry and engineering data. Exposure of this portal could allow an attacker to view proprietary performance metrics or even vehicle-specific logs.  
+2. Lateral Movement (sso-dev.tesla.com)   
+Exposure of development SSO or production fleet APIs creates a high‑impact risk because it can expose weaker controls and allow attackers to pivot from test access into sensitive internal workflows or permissions.
 
-3. **OS & Location Footprint:**   
-The infrastructure is confirmed to run on **Ubuntu**, with servers located in regions like **Finland and the UAE**. Knowing the specific OS allows attackers to hunt for known kernel exploits, while the diverse server locations increase the complexity of maintaining consistent security patches across the global network.  
+3. Fleet Sabotage (fleet-api.prd.vn.cloud.tesla.com)  
+Unauthorized access to a live production fleet API introduces  immediate safety risk, potential physical harm, and catastrophic regulatory liability, because it can affect live vehicle data or operations at scale, creating immediate safety, legal, and reputational impact.
 
+### Conclusion  
+From an acquisition standpoint, the greatest residual risk arises not from content systems, but from identity and fleet‑control services where a single authorization failure could create immediate safety, regulatory, and reputational consequences.
 
+---
+
+All findings were gathered using passive OSINT techniques only.
+No packets were sent directly to target systems.
+
+---
