@@ -16,5 +16,10 @@ Operator: Shatiqua Talley
 
 4. REMEDIATION
 * What is the primary defense against this attack?
-Answer: The primary defense is to use parameterized queries (prepared statements) which separate SQL code from user input. This ensures that user input is treated strictly as data, not executable commands, preventing injected characters from manipulating the underlying SQL execution logic. Additional protections include input validation, proper escaping, enforcing least-privilege database permissions and limiting what data is exposed in error messages.
+Answer: The primary defense is to use parameterized queries (prepared statements) 
+which separate SQL code from user input. This ensures that user input is treated 
+strictly as data, not executable commands, preventing injected characters from 
+manipulating the underlying SQL execution logic. Additional protections include 
+input validation, proper escaping, enforcing least-privilege database permissions 
+and limiting what data is exposed in error messages.
 
